@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Webshop — Polako</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ── FORCE LIGHT MODE ── */
+:root { color-scheme: light only; }
+
+/* ── TOKENS ── */
+:root {
+  --white: #ffffff;
+  --off: #faf7f3;
+  --cream: #f4ede4;
+  --linen: #ece4d9;
+  --border: #ddd5c8;
+  --sand: #b8a48c;
+  --bark: #7a6548;
+  --text: #1c1814;
+  --mid: #4a4540;
+  --soft: #8c8178;
+  --green: #4a6b42;
+  --g-light: #edf3eb;
+  --radius: 4px;
+  --t: .22s ease;
+  --px: 1.1rem;
+}
+
+/* ── RESET ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: 'Jost', sans-serif;
+  background: #ffffff !important;
+  color: #1c1814 !important;
+  line-height: 1.6;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; text-decoration: none; }
+button, input, select { font-family: inherit; font-size: inherit; }
+button { cursor: pointer; border: none; background: none; }
+
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── SHARED LAYOUT ── */
+.section { padding: 2.5rem var(--px); background: #ffffff; }
+.section-alt { background: var(--off) !important; }
+.section-cream { background: var(--cream) !important; }
+
+/* ── HEADER ── */
+.sh { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.75rem; }
+.sh-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.4rem, 5vw, 2.1rem); font-weight: 400; color: var(--text); white-space: nowrap; }
+.sh-line { flex: 1; height: 1px; background: var(--border); min-width: .5rem; }
+.sh-meta { font-size: .67rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); white-space: nowrap; }
+
+/* ── BREADCRUMB ── */
+.bc { padding: .75rem var(--px); font-size: .72rem; color: var(--soft); border-bottom: 1px solid var(--border); display: flex; gap: .35rem; align-items: center; flex-wrap: wrap; background: #ffffff; }
+.bc-link { color: var(--soft); cursor: pointer; transition: color var(--t); }
+.bc-link:hover { color: var(--green); }
+.bc span { opacity: .4; }
+.bc strong { color: var(--mid); font-weight: 400; }
+
+/* ── STRIP ── */
+.strip { background: var(--cream); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: .75rem var(--px); display: flex; align-items: center; gap: 1.1rem; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.strip::-webkit-scrollbar { display: none; }
+.strip-item { font-size: .62rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--mid); white-space: nowrap; }
+.strip-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--green); opacity: .5; flex-shrink: 0; }
+
+/* ── TAGS ── */
+.tag { display: inline-block; font-size: .6rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; padding: .25rem .6rem; border-radius: 2px; }
+.tag-green { color: #2d4a28; background: var(--g-light); }
+.tag-warm { color: #7a3d1a; background: #fdf0e8; }
+.tag-dark { color: #fff; background: var(--text); }
+.tag-new { color: #fff; background: var(--green); }
+.tag-hot { color: #fff; background: var(--bark); }
+
+/* ── BUTTONS ── */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .45rem; font-size: .75rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; padding: .75rem 1.4rem; border-radius: var(--radius); transition: all var(--t); cursor: pointer; white-space: nowrap; }
+.btn-dark { color: #fff; background: var(--text); border: 1.5px solid var(--text); }
+.btn-dark:hover { background: var(--green); border-color: var(--green); }
+.btn-outline { color: var(--text); background: transparent; border: 1.5px solid var(--border); }
+.btn-outline:hover { background: var(--text); color: #fff; border-color: var(--text); }
+
+/* ── PRODUCT CARD ── */
+.pc { background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: box-shadow var(--t), transform var(--t); display: block; cursor: pointer; }
+.pc:hover { box-shadow: 0 6px 24px rgba(28,24,20,.09); transform: translateY(-2px); }
+.pc:hover .pc-img { transform: scale(1.05); }
+.pc-img-wrap { position: relative; overflow: hidden; background: var(--cream); }
+.pc-img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; display: block; }
+.pc-badge { position: absolute; top: .6rem; left: .6rem; z-index: 1; }
+.pc-body { padding: 1rem; }
+.pc-cat { font-size: .6rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--green); display: block; margin-bottom: .3rem; }
+.pc-name { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-weight: 400; color: var(--text); line-height: 1.25; margin-bottom: .35rem; }
+.pc-desc { font-size: .78rem; color: var(--mid); line-height: 1.65; margin-bottom: .9rem; font-weight: 300; }
+.pc-footer { display: flex; align-items: center; justify-content: space-between; padding-top: .8rem; border-top: 1px solid var(--border); }
+.pc-price { font-size: .88rem; font-weight: 500; color: var(--text); }
+.pc-price-old { font-size: .75rem; color: var(--soft); text-decoration: line-through; font-weight: 300; margin-left: .3rem; }
+.pc-link { font-size: .65rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 1px; }
+
+/* ── GRIDS ── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.g4 { display: grid; grid-template-columns: 1fr 1fr; gap: .85rem; }
+
+/* ── SPECS ── */
+.specs { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.spec-row { display: flex; justify-content: space-between; align-items: center; padding: .75rem 1rem; border-bottom: 1px solid var(--border); font-size: .8rem; gap: 1rem; background: #ffffff; }
+.spec-row:last-child { border-bottom: none; }
+.spec-key { color: var(--soft); flex-shrink: 0; }
+.spec-val { font-weight: 500; color: var(--text); text-align: right; }
+
+/* ── TABS ── */
+.tabs-nav { display: flex; border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; margin-bottom: 1.25rem; }
+.tabs-nav::-webkit-scrollbar { display: none; }
+.tab-btn { padding: .65rem 1.1rem; font-size: .68rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--soft); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: all var(--t); margin-bottom: -1px; }
+.tab-btn.active { color: var(--text); border-bottom-color: var(--text); }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+.tab-text { font-size: .85rem; color: var(--mid); line-height: 1.85; margin-bottom: .85rem; font-weight: 300; }
+
+/* ── REVIEWS ── */
+.review { padding: 1rem; background: var(--off); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: .85rem; }
+.review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .35rem; }
+.review-name { font-weight: 500; font-size: .85rem; color: var(--text); }
+.review-stars { color: var(--bark); font-size: .8rem; letter-spacing: 1px; }
+.review-text { font-size: .8rem; color: var(--mid); line-height: 1.7; font-weight: 300; }
+.review-meta { font-size: .65rem; color: var(--soft); margin-top: .35rem; display: block; }
+
+/* ── FILTER ── */
+.filter-bar { display: flex; align-items: center; justify-content: space-between; padding: .75rem var(--px); background: #ffffff; border-bottom: 1px solid var(--border); gap: .6rem; flex-wrap: wrap; }
+.filter-pills { display: flex; gap: .35rem; flex-wrap: wrap; align-items: center; }
+.filter-lbl { font-size: .65rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
+.pill { padding: .35rem .8rem; border: 1px solid var(--border); border-radius: 20px; font-size: .72rem; color: var(--mid); background: #ffffff; cursor: pointer; transition: all var(--t); }
+.pill:hover { border-color: var(--text); color: var(--text); }
+.pill.active { background: var(--text); color: #fff; border-color: var(--text); }
+.sort-sel { font-size: .75rem; color: var(--text); border: 1px solid var(--border); padding: .32rem .65rem; border-radius: var(--radius); background: #ffffff; cursor: pointer; outline: none; }
+
+/* ── QTY / ADD ── */
+.qty-row { display: flex; gap: .65rem; align-items: center; }
+.qty-wrap { display: flex; align-items: center; border: 1.5px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.qty-btn { width: 38px; height: 44px; background: var(--off); font-size: 1rem; color: var(--mid); display: flex; align-items: center; justify-content: center; transition: background var(--t); }
+.qty-btn:hover { background: var(--linen); }
+.qty-num { width: 40px; text-align: center; font-size: .9rem; font-weight: 500; border: none; outline: none; background: transparent; color: var(--text); }
+.btn-add { flex: 1; height: 44px; font-size: .75rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: #fff; background: var(--text); border: none; border-radius: var(--radius); cursor: pointer; transition: background var(--t); display: flex; align-items: center; justify-content: center; gap: .4rem; }
+.btn-add:hover { background: var(--green); }
+.btn-wish { height: 44px; width: 44px; border: 1.5px solid var(--border); border-radius: var(--radius); background: #ffffff; font-size: .95rem; cursor: pointer; transition: all var(--t); display: flex; align-items: center; justify-content: center; color: var(--text); }
+.btn-wish:hover { border-color: var(--bark); }
+
+/* ── DELIVERY ── */
+.del-box { background: var(--off); border: 1px solid var(--border); border-radius: var(--radius); padding: .85rem 1rem; display: flex; flex-direction: column; gap: .4rem; }
+.del-row { display: flex; align-items: center; gap: .5rem; font-size: .76rem; color: var(--mid); }
+
+/* ── COLOR VARIANTS ── */
+.col-opts { display: flex; gap: .5rem; flex-wrap: wrap; }
+.col-btn { width: 32px; height: 32px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; position: relative; transition: transform var(--t); outline: none; }
+.col-btn::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 1.5px solid transparent; transition: border-color var(--t); }
+.col-btn:hover { transform: scale(1.1); }
+.col-btn.active::after { border-color: var(--text); }
+.sz-opts { display: flex; gap: .5rem; flex-wrap: wrap; }
+.sz-btn { padding: .4rem .9rem; border: 1.5px solid var(--border); border-radius: var(--radius); font-size: .78rem; color: var(--mid); background: #ffffff; cursor: pointer; transition: all var(--t); }
+.sz-btn:hover { border-color: var(--text); color: var(--text); }
+.sz-btn.active { border-color: var(--text); background: var(--text); color: #fff; }
+
+/* ── CONTACT BOX ── */
+.contact-box { background: var(--off); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem; }
+.contact-title { font-size: .68rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--mid); margin-bottom: .8rem; }
+.contact-opt { display: flex; align-items: flex-start; gap: .5rem; font-size: .82rem; color: var(--mid); padding: .4rem 0; border-bottom: 1px solid var(--border); }
+.contact-opt:last-of-type { border-bottom: none; margin-bottom: .65rem; }
+.contact-note { font-size: .75rem; color: var(--soft); line-height: 1.7; font-style: italic; }
+
+/* ── GALLERY ── */
+.gallery-main { aspect-ratio: 4/3; overflow: hidden; border-radius: var(--radius); border: 1px solid var(--border); background: var(--cream); margin-bottom: .65rem; }
+.gallery-main img { width: 100%; height: 100%; object-fit: cover; }
+.gallery-thumbs { display: flex; gap: .5rem; overflow-x: auto; scrollbar-width: none; }
+.gallery-thumbs::-webkit-scrollbar { display: none; }
+.gthumb { width: 64px; height: 64px; flex-shrink: 0; border-radius: var(--radius); border: 1.5px solid var(--border); overflow: hidden; cursor: pointer; background: var(--cream); transition: border-color var(--t); }
+.gthumb.active { border-color: var(--text); }
+.gthumb img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ── HERO ── */
+.hero { background: var(--off); border-bottom: 1px solid var(--border); }
+.hero-img { width: 100%; aspect-ratio: 4/3; overflow: hidden; }
+.hero-img img { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; }
+.hero-content { padding: 2rem var(--px) 2.5rem; }
+.hero-eyebrow { display: flex; align-items: center; gap: .65rem; margin-bottom: 1.25rem; }
+.hero-line { width: 24px; height: 1px; background: var(--green); }
+.hero-lbl { font-size: .65rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--green); }
+.hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.4rem, 8vw, 5rem); font-weight: 300; line-height: 1.05; color: var(--text); margin-bottom: 1.1rem; }
+.hero-title em { font-style: italic; color: var(--bark); }
+.hero-text { font-size: .9rem; line-height: 1.8; color: var(--mid); max-width: 40ch; margin-bottom: 1.75rem; font-weight: 300; }
+.hero-btns { display: flex; gap: .75rem; flex-wrap: wrap; }
+
+/* ── CAT CARD ── */
+.cat-card { position: relative; overflow: hidden; border-radius: var(--radius); border: 1px solid var(--border); background: var(--cream); display: block; cursor: pointer; transition: box-shadow var(--t), transform var(--t); }
+.cat-card:hover { box-shadow: 0 6px 24px rgba(28,24,20,.1); transform: translateY(-2px); }
+.cat-card:hover .cat-img { transform: scale(1.05); }
+.cat-img-wrap { aspect-ratio: 3/4; overflow: hidden; }
+.cat-img { width: 100%; height: 100%; object-fit: cover; transition: transform .55s ease; display: block; }
+.cat-info { padding: .85rem .9rem; background: #ffffff; border-top: 1px solid var(--border); }
+.cat-name { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 400; color: var(--text); display: block; margin-bottom: .15rem; }
+.cat-count { font-size: .65rem; color: var(--soft); }
+
+/* ── LOVING ── */
+.loving-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: var(--radius); border: 1px solid var(--border); display: block; }
+.loving-caption { margin-top: .6rem; font-size: .68rem; color: var(--soft); font-style: italic; }
+.loving-quote { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.3rem, 4vw, 1.85rem); font-style: italic; font-weight: 300; line-height: 1.4; color: var(--text); margin-bottom: 1rem; padding-left: 1rem; border-left: 2px solid var(--green); }
+.loving-body { font-size: .85rem; color: var(--mid); line-height: 1.8; margin-bottom: 1.5rem; font-weight: 300; }
+.loving-item { display: flex; gap: .85rem; padding: .85rem 0; border-bottom: 1px solid var(--border); cursor: pointer; align-items: flex-start; }
+.loving-item:last-child { border-bottom: none; }
+.li-num { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--green); opacity: .45; line-height: 1; flex-shrink: 0; min-width: 1.8rem; font-weight: 300; }
+.li-name { font-size: .88rem; font-weight: 500; color: var(--text); margin-bottom: .18rem; }
+.li-desc { font-size: .76rem; color: var(--soft); line-height: 1.6; font-weight: 300; }
+
+/* ── RUKA ── */
+.ruka-box { background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.ruka-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
+.ruka-content { padding: 1.75rem var(--px); }
+.ruka-eyebrow { display: flex; align-items: center; gap: .6rem; margin-bottom: 1rem; }
+.ruka-line-el { width: 20px; height: 1px; background: var(--green); }
+.ruka-lbl { font-size: .65rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--green); }
+.ruka-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.9rem, 6vw, 3rem); font-weight: 300; line-height: 1.1; color: var(--text); margin-bottom: 1rem; }
+.ruka-text { font-size: .87rem; color: var(--mid); line-height: 1.8; margin-bottom: 1.5rem; font-weight: 300; }
+.ruka-item { display: flex; align-items: center; justify-content: space-between; padding: .85rem 1rem; background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: .6rem; cursor: pointer; transition: border-color var(--t); }
+.ruka-item:hover { border-color: var(--green); }
+.ruka-item-l { display: flex; align-items: center; gap: .65rem; }
+.ruka-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+.ruka-item-name { font-family: 'Cormorant Garamond', serif; font-size: .98rem; color: var(--text); }
+.ruka-item-tag { font-size: .65rem; font-weight: 500; color: var(--green); white-space: nowrap; }
+.ruka-note { font-size: .76rem; color: var(--soft); line-height: 1.75; padding: .9rem 1rem; background: #ffffff; border-radius: var(--radius); border: 1px solid var(--border); font-style: italic; margin-top: .6rem; }
+
+/* ── CAT HERO ── */
+.cat-hero { background: var(--off); border-bottom: 1px solid var(--border); }
+.cat-hero-img { width: 100%; aspect-ratio: 16/9; overflow: hidden; }
+.cat-hero-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cat-hero-content { padding: 1.75rem var(--px) 2rem; }
+.cat-eyebrow { font-size: .65rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--green); display: flex; align-items: center; gap: .55rem; margin-bottom: .85rem; }
+.cat-eyebrow::before { content: ''; display: block; width: 20px; height: 1px; background: var(--green); }
+.cat-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.2rem, 8vw, 4rem); font-weight: 300; color: var(--text); line-height: 1.05; margin-bottom: .75rem; }
+.cat-title em { font-style: italic; color: var(--bark); }
+.cat-desc { font-size: .88rem; color: var(--mid); line-height: 1.8; font-weight: 300; max-width: 44ch; }
+
+/* ── CAT BANNER ── */
+.cat-banner { background: var(--cream); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; grid-column: 1 / -1; }
+.cat-banner-img { aspect-ratio: 16/7; overflow: hidden; }
+.cat-banner-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cat-banner-body { padding: 1.25rem; }
+.cat-banner-tag { font-size: .6rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--green); display: block; margin-bottom: .55rem; }
+.cat-banner-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.1rem, 4vw, 1.5rem); font-weight: 300; color: var(--text); margin-bottom: .55rem; line-height: 1.25; }
+.cat-banner-text { font-size: .8rem; color: var(--mid); line-height: 1.75; margin-bottom: 1rem; font-weight: 300; }
+
+/* ── PROD DETAIL ── */
+.prod-detail-wrap { padding: 1.5rem var(--px); }
+.prod-h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 6vw, 2.8rem); font-weight: 300; color: var(--text); line-height: 1.1; margin-bottom: .5rem; }
+.prod-tagline { font-family: 'Cormorant Garamond', serif; font-size: .95rem; font-style: italic; color: var(--bark); margin-bottom: 1.1rem; font-weight: 300; }
+.prod-rating { display: flex; align-items: center; gap: .45rem; margin-bottom: 1.25rem; }
+.stars { color: var(--bark); letter-spacing: 1px; font-size: .85rem; }
+.rating-text { font-size: .72rem; color: var(--soft); }
+.price-row { display: flex; align-items: baseline; gap: .6rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+.price-main { font-size: 1.6rem; font-weight: 500; color: var(--text); }
+.price-old { font-size: .9rem; color: var(--soft); text-decoration: line-through; font-weight: 300; }
+.price-badge { font-size: .7rem; font-weight: 500; color: var(--green); letter-spacing: .05em; }
+.var-section { margin-bottom: 1.4rem; }
+.var-lbl { font-size: .7rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--mid); margin-bottom: .6rem; display: flex; justify-content: space-between; align-items: center; }
+.var-sel { font-weight: 400; color: var(--text); text-transform: none; letter-spacing: 0; font-size: .83rem; }
+
+/* ── ARTICLE FEATURE ── */
+.art-feat { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--off); margin-bottom: 2rem; }
+.art-feat-img { aspect-ratio: 16/9; overflow: hidden; }
+.art-feat-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.art-feat-body { padding: 1.25rem; }
+.art-feat-tag { font-size: .6rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--green); display: block; margin-bottom: .6rem; }
+.art-feat-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.2rem, 4vw, 1.6rem); font-weight: 300; color: var(--text); line-height: 1.3; margin-bottom: .65rem; }
+.art-feat-exc { font-size: .82rem; color: var(--mid); line-height: 1.75; margin-bottom: .75rem; font-weight: 300; }
+.art-feat-meta { font-size: .68rem; color: var(--soft); margin-bottom: 1.1rem; }
+
+/* ── ARTICLE CARD ── */
+.ac { background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; cursor: pointer; }
+.ac-img-wrap { aspect-ratio: 16/9; overflow: hidden; background: var(--cream); }
+.ac-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ac-body { padding: 1rem; }
+.ac-cat { font-size: .6rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--green); display: block; margin-bottom: .4rem; }
+.ac-title { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 400; color: var(--text); line-height: 1.3; margin-bottom: .4rem; }
+.ac-excerpt { font-size: .78rem; color: var(--mid); line-height: 1.65; margin-bottom: .5rem; font-weight: 300; }
+.ac-meta { font-size: .65rem; color: var(--soft); }
+
+/* ── RUKA PROD BOX ── */
+.prod-box { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 1.5rem; background: #ffffff; }
+.prod-box-img { width: 100%; aspect-ratio: 16/9; overflow: hidden; }
+.prod-box-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.prod-box-body { padding: 1.25rem; }
+.prod-box-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.5rem, 5vw, 2.2rem); font-weight: 300; color: var(--text); line-height: 1.1; margin-bottom: .55rem; }
+.prod-box-tagline { font-family: 'Cormorant Garamond', serif; font-size: .92rem; font-style: italic; color: var(--bark); margin-bottom: 1rem; font-weight: 300; }
+.prod-box-text { font-size: .85rem; color: var(--mid); line-height: 1.85; margin-bottom: 1.25rem; font-weight: 300; }
+
+/* ── DESKTOP ── */
+@media (min-width: 700px) {
+  :root { --px: 2.5rem; }
+  .g3 { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  .g4 { grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  .section { padding: 3.5rem var(--px); }
+
+  .hero { display: grid; grid-template-columns: 1fr 1fr; min-height: 85vh; }
+  .hero-img { aspect-ratio: auto; height: 100%; }
+  .hero-content { display: flex; flex-direction: column; justify-content: center; padding: 3rem 2.5rem 3rem 3rem; order: -1; }
+
+  .cat-hero { display: grid; grid-template-columns: 1fr 1fr; }
+  .cat-hero-img { aspect-ratio: auto; height: 100%; }
+  .cat-hero-content { display: flex; flex-direction: column; justify-content: center; padding: 2.5rem 2rem 2.5rem 3rem; order: -1; }
+
+  .feat-grid { grid-template-columns: 1.6fr 1fr 1fr; }
+  .feat-grid .pc:first-child .pc-img-wrap { aspect-ratio: 3/4; }
+
+  .loving-wrap { display: grid; grid-template-columns: 1fr 1.1fr; gap: 3rem; align-items: start; }
+
+  .ruka-box { display: grid; grid-template-columns: 1fr 1fr; }
+  .ruka-img { aspect-ratio: auto; height: 100%; }
+  .ruka-content { padding: 2.5rem 2.5rem; }
+
+  .prod-detail-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+  .gallery-main { aspect-ratio: 4/5; }
+
+  .art-feat { display: grid; grid-template-columns: 1fr 1fr; }
+  .art-feat-img { aspect-ratio: auto; }
+  .art-feat-body { padding: 2rem; display: flex; flex-direction: column; justify-content: center; }
+
+  .prod-box { display: grid; grid-template-columns: 1fr 1fr; }
+  .prod-box-img { aspect-ratio: auto; }
+  .prod-box-body { padding: 2rem; display: flex; flex-direction: column; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     PAGE: WEBSHOP HOMEPAGE
+══════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <nav class="bc">
+    <span class="bc-link" onclick="nav('home')">Početna</span>
+    <span>/</span><strong>Webshop</strong>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-img">
+      <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1000&q=85&auto=format&fit=crop" alt="Topla kuhinja">
+    </div>
+    <div class="hero-content">
+      <div class="hero-eyebrow"><div class="hero-line"></div><span class="hero-lbl">Pažljivo odabrano</span></div>
+      <h1 class="hero-title">Stvari koje<br><em>zaista koristim</em><br>svaki dan.</h1>
+      <p class="hero-text">Nije ovo klasični webshop. Ovo su predmeti koji su ušli u moj svakodnevni ritam i ostali — iz kuhinje, vrta, kupaonice. Sve s razlogom, sve s pričom.</p>
+      <div class="hero-btns">
+        <button class="btn btn-dark" onclick="scrollToId('kategorije')">Istraži kolekciju</button>
+        <button class="btn btn-outline" onclick="scrollToId('iz-ruke-u-ruku')">Iz ruke u ruku</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="strip">
+    <span class="strip-item">Ručno odabrano</span><span class="strip-dot"></span>
+    <span class="strip-item">Sporo življenje</span><span class="strip-dot"></span>
+    <span class="strip-item">Prirodni materijali</span><span class="strip-dot"></span>
+    <span class="strip-item">Iz ruke u ruku</span><span class="strip-dot"></span>
+    <span class="strip-item">Dostava Hrvatska</span><span class="strip-dot"></span>
+    <span class="strip-item">Povrat 14 dana</span>
+  </div>
+
+  <section class="section section-alt" id="kategorije">
+    <div class="sh"><h2 class="sh-title">Kategorije</h2><div class="sh-line"></div><span class="sh-meta">4 kategorije</span></div>
+    <div class="g4">
+      <div class="cat-card" onclick="nav('cat-kuhinja')">
+        <div class="cat-img-wrap"><img class="cat-img" src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=500&q=80&auto=format&fit=crop" alt="Kuhinja"></div>
+        <div class="cat-info"><span class="cat-name">Kuhinja</span><span class="cat-count">13 proizvoda</span></div>
+      </div>
+      <div class="cat-card" onclick="nav('cat-vrt')">
+        <div class="cat-img-wrap"><img class="cat-img" src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=500&q=80&auto=format&fit=crop" alt="Vrt"></div>
+        <div class="cat-info"><span class="cat-name">Vrt</span><span class="cat-count">1 proizvod</span></div>
+      </div>
+      <div class="cat-card" onclick="nav('cat-njega')">
+        <div class="cat-img-wrap"><img class="cat-img" src="https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=500&q=80&auto=format&fit=crop" alt="Njega"></div>
+        <div class="cat-info"><span class="cat-name">Njega</span><span class="cat-count">3 proizvoda</span></div>
+      </div>
+      <div class="cat-card" onclick="nav('cat-ruka')">
+        <div class="cat-img-wrap"><img class="cat-img" src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&q=80&auto=format&fit=crop" alt="Iz ruke u ruku"></div>
+        <div class="cat-info"><span class="cat-name">Iz ruke u ruku</span><span class="cat-count">2 proizvoda</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="sh"><h2 class="sh-title">Istaknuto</h2><div class="sh-line"></div><span class="sh-meta">Omiljeni ovog tjedna</span></div>
+    <div class="g3 feat-grid">
+      <div class="pc" onclick="nav('prod-kosarica')">
+        <div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1585478259715-876abe3f00b7?w=600&q=80&auto=format&fit=crop" alt="Košara"><span class="pc-badge"><span class="tag tag-hot">Bestseller</span></span></div>
+        <div class="pc-body"><span class="pc-cat">Kuhinja</span><h3 class="pc-name">Košara za dizanje kruha</h3><p class="pc-desc">Rattanová košara, okrugla i duguljasta varijanta.</p><div class="pc-footer"><span class="pc-price">Od 28 €</span><span class="pc-link">Pogledaj →</span></div></div>
+      </div>
+      <div class="pc" onclick="nav('cat-kuhinja')">
+        <div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=600&q=80&auto=format&fit=crop" alt="Dutch Oven"><span class="pc-badge"><span class="tag tag-new">Novo</span></span></div>
+        <div class="pc-body"><span class="pc-cat">Kuhinja</span><h3 class="pc-name">Dutch Oven</h3><p class="pc-desc">Emajlirani lonac za kruh i polagano kuhanje.</p><div class="pc-footer"><span class="pc-price">149 €</span><span class="pc-link">Pogledaj →</span></div></div>
+      </div>
+      <div class="pc" onclick="nav('prod-butter-bell')">
+        <div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=600&q=80&auto=format&fit=crop" alt="Butter Bell"></div>
+        <div class="pc-body"><span class="pc-cat">Kuhinja</span><h3 class="pc-name">Butter Bell</h3><p class="pc-desc">Keramički čuvar maslaca. U 5 boja.</p><div class="pc-footer"><div><span class="pc-price">24 €</span><span class="pc-price-old">29 €</span></div><span class="pc-link">Pogledaj →</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="sh"><h2 class="sh-title">Trenutno volim</h2><div class="sh-line"></div><span class="sh-meta">Ovaj tjedan</span></div>
+    <div class="loving-wrap">
+      <div>
+        <img class="loving-img" src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=700&q=80&auto=format&fit=crop" alt="Jutarnja rutina">
+        <p class="loving-caption">Jutarnja rutina, kuhinja, svibanj 2025.</p>
+      </div>
+      <div>
+        <p class="loving-quote">"Jutro koje počinje bez žurbe mijenja cijeli dan."</p>
+        <p class="loving-body">Svaki tjedan dijelim što me trenutno veseli — koji predmet, navika ili mali ritual čini razliku.</p>
+        <div>
+          <div class="loving-item" onclick="nav('prod-kosarica')"><span class="li-num">01</span><div><p class="li-name">Košara za dizanje kruha</p><p class="li-desc">Svaki put kad izvadim kruh iz nje, osjećam da sam nešto napravila rukama.</p></div></div>
+          <div class="loving-item" onclick="nav('prod-butter-bell')"><span class="li-num">02</span><div><p class="li-name">Butter Bell — kremasta bijela</p><p class="li-desc">Maslac uvijek mekan. Mali detalj koji mijenja doručak.</p></div></div>
+          <div class="loving-item" onclick="nav('cat-njega')"><span class="li-num">03</span><div><p class="li-name">Platneni ulošci</p><p class="li-desc">Manja plastika, manje otpada — i koža je zahvalna.</p></div></div>
+          <div class="loving-item" onclick="nav('cat-ruka')"><span class="li-num">04</span><div><p class="li-name">Sourdough starter</p><p class="li-desc">Briga o nečemu živom — sporije, ali puno ljepše.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="iz-ruke-u-ruku">
+    <div class="ruka-box">
+      <img class="ruka-img" src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&q=80&auto=format&fit=crop" alt="Iz ruke u ruku">
+      <div class="ruka-content">
+        <div class="ruka-eyebrow"><div class="ruka-line-el"></div><span class="ruka-lbl">Posebna kategorija</span></div>
+        <h2 class="ruka-title">Iz ruke<br>u ruku</h2>
+        <p class="ruka-text">Neke stvari ne možeš kupiti u trgovini. Sourdough starter koji sam godinama njegovala i kefir zrnca — to se dijeli s pričom, ne šalje bez nje.</p>
+        <div class="ruka-item" onclick="nav('cat-ruka')"><div class="ruka-item-l"><span class="ruka-dot"></span><span class="ruka-item-name">Sourdough starter — aktivan, 5+ godina</span></div><span class="ruka-item-tag">Javi se →</span></div>
+        <div class="ruka-item" onclick="nav('cat-ruka')"><div class="ruka-item-l"><span class="ruka-dot"></span><span class="ruka-item-name">Kefir zrnca — mliječna, aktivna</span></div><span class="ruka-item-tag">Javi se →</span></div>
+        <p class="ruka-note">Šaljem poštom ili preuzimamo osobno u Zagrebu. Uz svaki paket dolaze upute i moj broj mobitela. 🌿</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE: KATEGORIJA KUHINJA
+══════════════════════════════════════════ -->
+<div id="page-cat-kuhinja" class="page">
+  <nav class="bc">
+    <span class="bc-link" onclick="nav('home')">Webshop</span><span>/</span><strong>Kuhinja</strong>
+  </nav>
+  <div class="cat-hero">
+    <div class="cat-hero-img"><img src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=900&q=85&auto=format&fit=crop" alt="Kuhinja"></div>
+    <div class="cat-hero-content">
+      <span class="cat-eyebrow">Kategorija</span>
+      <h1 class="cat-title">Ku<em>hi</em>nja</h1>
+      <p class="cat-desc">Predmeti koji svakodnevno kuhanje pretvaraju u ritual. Odabrani s ljubavlju prema procesu i materijalima.</p>
+    </div>
+  </div>
+  <div class="filter-bar">
+    <div class="filter-pills">
+      <span class="filter-lbl">Filtriraj:</span>
+      <button class="pill active" onclick="flt(this,'sve')">Sve</button>
+      <button class="pill" onclick="flt(this,'kruh')">Za kruh</button>
+      <button class="pill" onclick="flt(this,'serviranje')">Serviranje</button>
+      <button class="pill" onclick="flt(this,'maslac')">Maslac</button>
+      <button class="pill" onclick="flt(this,'klice')">Klice</button>
+      <button class="pill" onclick="flt(this,'tekstil')">Tekstil</button>
+    </div>
+    <select class="sort-sel"><option>Preporučeno</option><option>Cijena: niža</option><option>Cijena: viša</option></select>
+  </div>
+  <section class="section">
+    <p style="font-size:.75rem;color:var(--soft);margin-bottom:1.5rem">13 proizvoda</p>
+    <div class="g3" id="kuhGrid">
+      <div class="pc" data-cat="kruh" onclick="nav('prod-kosarica')"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1585478259715-876abe3f00b7?w=500&q=80" alt=""><span class="pc-badge"><span class="tag tag-hot">Bestseller</span></span></div><div class="pc-body"><span class="pc-cat">Za kruh</span><h3 class="pc-name">Košara za dizanje — okrugla</h3><p class="pc-desc">Rattanová košara, 25cm. Savršen spiralni uzorak na kori.</p><div class="pc-footer"><span class="pc-price">28 €</span><span class="pc-link">Pogledaj →</span></div></div></div>
+      <div class="pc" data-cat="kruh" onclick="nav('prod-kosarica')"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&q=80" alt=""></div><div class="pc-body"><span class="pc-cat">Za kruh</span><h3 class="pc-name">Košara za dizanje — duguljasta</h3><p class="pc-desc">Rattanová košara, 30cm. Za baguette i rustikalni kruh.</p><div class="pc-footer"><span class="pc-price">32 €</span><span class="pc-link">Pogledaj →</span></div></div></div>
+      <div class="pc" data-cat="kruh" onclick="nav('cat-kuhinja')"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=500&q=80" alt=""><span class="pc-badge"><span class="tag tag-new">Novo</span></span></div><div class="pc-body"><span class="pc-cat">Za kruh · Posuđe</span><h3 class="pc-name">Dutch Oven</h3><p class="pc-desc">Emajlirani lijevano-željezni lonac, 4,5L.</p><div class="pc-footer"><span class="pc-price">149 €</span><span class="pc-link">Pogledaj →</span></div></div></div>
+      <div class="cat-banner" data-cat="sve" style="grid-column:1/-1">
+        <div class="cat-banner-img"><img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=700&q=80" alt=""></div>
+        <div class="cat-banner-body"><span class="cat-banner-tag">Iz časopisa</span><h3 class="cat-banner-title">Rituali kuhinje koji mijenjaju jutro</h3><p class="cat-banner-text">O tome kako odabir pravih predmeta ne mijenja samo kuhinju — mijenja ton cijelog dana.</p><button class="btn btn-outline" style="width:fit-content">Čitaj →</button></div>
+      </div>
+      <div class="pc" data-cat="maslac" onclick="nav('prod-butter-bell')"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=500&q=80" alt=""></div><div class="pc-body"><span class="pc-cat">Maslac</span><h3 class="pc-name">Butter Bell — 5 boja</h3><p class="pc-desc">Keramički čuvar maslaca na sobnoj temperaturi.</p><div class="pc-footer"><div><span class="pc-price">24 €</span><span class="pc-price-old">29 €</span></div><span class="pc-link">Pogledaj →</span></div></div></div>
+      <div class="pc" data-cat="serviranje"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1544025162-d76694265947?w=500&q=80" alt=""></div><div class="pc-body"><span class="pc-cat">Za serviranje</span><h3 class="pc-name">Daska za serviranje — mala</h3><p class="pc-desc">Maslinovo drvo, 30×20cm.</p><div class="pc-footer"><span class="pc-price">38 €</span><span class="pc-link">Pogledaj →</span></div></div></div>
+      <div class="pc" data-cat="serviranje"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1544025162-d76694265947?w=500&q=80" alt=""></div><div class="pc-body"><span class="pc-cat">Za serviranje</span><h3 class="pc-name">Daska za serviranje — velika</h3><p class="pc-desc">Maslinovo drvo, 50×30cm.</p><div class="pc-footer"><span class="pc-price">58 €</span><span class="pc-link">Pogledaj →</span></div></div></div>
+      <div class="pc" data-cat="klice"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1622480916113-9000ac49b79d?w=500&q=80" alt=""><span class="pc-badge"><span class="tag tag-new">Novo</span></span></div><div class="pc-body"><span class="pc-cat">Klice</span><h3 class="pc-name">Staklenka za klice — mala</h3><p class="pc-desc">Set: staklenka 500ml, mrežica, postolje.</p><div class="pc-footer"><span class="pc-price">12 €</span><span class="pc-link">Pogledaj →</span></div></div></div>
+      <div class="pc" data-cat="klice"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1622480916113-9000ac49b79d?w=500&q=80" alt=""></div><div class="pc-body"><span class="pc-cat">Klice</span><h3 class="pc-name">Staklenka za klice — velika</h3><p class="pc-desc">Set: staklenka 1L, mrežica, postolje.</p><div class="pc-footer"><span class="pc-price">16 €</span><span class="pc-link">Pogledaj →</span></div></div></div>
+      <div class="pc" data-cat="kruh"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&q=80" alt=""></div><div class="pc-body"><span class="pc-cat">Za kruh</span><h3 class="pc-name">Starter posuda — mala</h3><p class="pc-desc">Staklena posuda 500ml s poklopcem za sourdough starter.</p><div class="pc-footer"><span class="pc-price">18 €</span><span class="pc-link">Pogledaj →</span></div></div></div>
+      <div class="pc" data-cat="kruh"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&q=80" alt=""></div><div class="pc-body"><span class="pc-cat">Za kruh</span><h3 class="pc-name">Starter posuda — velika</h3><p class="pc-desc">Staklena posuda 1L s poklopcem.</p><div class="pc-footer"><span class="pc-price">24 €</span><span class="pc-link">Pogledaj →</span></div></div></div>
+      <div class="pc" data-cat="tekstil"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=500&q=80" alt=""></div><div class="pc-body"><span class="pc-cat">Tekstil</span><h3 class="pc-name">Lanena kuhinjska krpa</h3><p class="pc-desc">100% laneno platno, 50×70cm. Set od 2.</p><div class="pc-footer"><span class="pc-price">22 € / set</span><span class="pc-link">Pogledaj →</span></div></div></div>
+      <div class="pc" data-cat="serviranje"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=500&q=80" alt=""></div><div class="pc-body"><span class="pc-cat">Kuhinja</span><h3 class="pc-name">Kuhača — maslinovo drvo</h3><p class="pc-desc">Ručno rezbarena, 32cm. Ne grebe posuđe.</p><div class="pc-footer"><span class="pc-price">19 €</span><span class="pc-link">Pogledaj →</span></div></div></div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE: KATEGORIJA VRT
+══════════════════════════════════════════ -->
+<div id="page-cat-vrt" class="page">
+  <nav class="bc"><span class="bc-link" onclick="nav('home')">Webshop</span><span>/</span><strong>Vrt</strong></nav>
+  <div class="cat-hero">
+    <div class="cat-hero-img"><img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=900&q=85&auto=format&fit=crop" alt="Vrt"></div>
+    <div class="cat-hero-content">
+      <span class="cat-eyebrow">Kategorija</span>
+      <h1 class="cat-title">Vr<em>t</em></h1>
+      <p class="cat-desc">Jedan pažljivo odabran proizvod koji je promijenio moj vrt.</p>
+    </div>
+  </div>
+  <section class="section">
+    <div style="display:grid;gap:2rem">
+      <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=900&q=85&auto=format&fit=crop" alt="Visoka gredica" style="width:100%;border-radius:var(--radius);border:1px solid var(--border);aspect-ratio:16/9;object-fit:cover;display:block">
+      <div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.85rem"><span class="tag tag-green">Vrt</span><span class="tag tag-warm">Preporučeno</span></div>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,5vw,2.4rem);font-weight:300;color:var(--text);line-height:1.1;margin-bottom:.7rem">Visoka gredica — Corten čelik</h2>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:.95rem;font-style:italic;color:var(--bark);margin-bottom:1.1rem;font-weight:300">Gredica koja je promijenila moj vrt i moj odnos prema uzgoju.</p>
+        <p style="font-size:.87rem;color:var(--mid);line-height:1.85;margin-bottom:1.25rem;font-weight:300">Viša od poda, bolja drenaža, topliji korijen, veći prinos. Jednom postavljena, traje desetljećima. Corten čelik razvija karakterističnu hrđastu patinu — prirodna zaštita i estetski element.</p>
+        <div class="specs" style="margin-bottom:1.5rem">
+          <div class="spec-row"><span class="spec-key">Materijal</span><span class="spec-val">Corten čelik 2mm</span></div>
+          <div class="spec-row"><span class="spec-key">Dimenzije</span><span class="spec-val">120 × 60 × 80 cm</span></div>
+          <div class="spec-row"><span class="spec-key">Trajnost</span><span class="spec-val">20+ godina</span></div>
+          <div class="spec-row"><span class="spec-key">Dostava</span><span class="spec-val">Hrvatska, kurirska</span></div>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:.6rem;margin-bottom:1.25rem">
+          <span style="font-size:1.6rem;font-weight:500;color:var(--text)">189 €</span>
+          <span style="font-size:.82rem;color:var(--soft)">+ dostava 12 €</span>
+        </div>
+        <div class="qty-row" style="margin-bottom:1rem">
+          <div class="qty-wrap">
+            <button class="qty-btn" onclick="chQty('vrtQty',-1)">−</button>
+            <input class="qty-num" id="vrtQty" type="number" value="1" min="1" max="5" readonly>
+            <button class="qty-btn" onclick="chQty('vrtQty',1)">+</button>
+          </div>
+          <button class="btn-add">🛒 Dodaj u košaricu</button>
+        </div>
+        <div class="del-box">
+          <div class="del-row">📦 Dostava 3–5 radnih dana · 12 €</div>
+          <div class="del-row">↩️ Povrat unutar 14 dana</div>
+          <div class="del-row">🌱 Lokalni dobavljač</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section section-alt">
+    <div class="sh"><h2 class="sh-title">Iz časopisa</h2><div class="sh-line"></div></div>
+    <div class="art-feat">
+      <div class="art-feat-img"><img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=80" alt=""></div>
+      <div class="art-feat-body">
+        <span class="art-feat-tag">Vrt · Uzgoj</span>
+        <h3 class="art-feat-title">Zašto sam prešla na visoke gredice i nikad se nisam vratila</h3>
+        <p class="art-feat-exc">O prvoj sezoni u kojoj sam konačno imala prinos kojim sam bila zadovoljna.</p>
+        <p class="art-feat-meta">8 min čitanja · 15. ožujka 2025.</p>
+        <button class="btn btn-outline" style="width:fit-content">Čitaj →</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE: KATEGORIJA NJEGA
+══════════════════════════════════════════ -->
+<div id="page-cat-njega" class="page">
+  <nav class="bc"><span class="bc-link" onclick="nav('home')">Webshop</span><span>/</span><strong>Njega</strong></nav>
+  <div class="cat-hero">
+    <div class="cat-hero-img"><img src="https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=900&q=85&auto=format&fit=crop" alt="Njega"></div>
+    <div class="cat-hero-content">
+      <span class="cat-eyebrow">Kategorija</span>
+      <h1 class="cat-title">Nje<em>ga</em></h1>
+      <p class="cat-desc">Prirodna, jednostavna njega koja smanjuje otpad i poštuje kožu.</p>
+    </div>
+  </div>
+  <section class="section">
+    <p style="font-size:.75rem;color:var(--soft);margin-bottom:1.5rem">3 proizvoda</p>
+    <div class="g3">
+      <div class="pc"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1620756236308-65c3ef5d25f3?w=500&q=80" alt=""><span class="pc-badge"><span class="tag tag-new">Novo</span></span></div><div class="pc-body"><span class="pc-cat">Kupaonica</span><h3 class="pc-name">Hello Clean — filtrirana glava tuša</h3><p class="pc-desc">Uklanja klor i teške metale. Mekša koža i kosa. Filter 3 mj.</p><div class="pc-footer"><span class="pc-price">69 €</span><span class="pc-link">Pogledaj →</span></div></div></div>
+      <div class="pc"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=500&q=80" alt=""></div><div class="pc-body"><span class="pc-cat">Njega</span><h3 class="pc-name">Platneni ulošci — set 10</h3><p class="pc-desc">100% organski pamuk. Perivi, trajni, mekani.</p><div class="pc-footer"><span class="pc-price">28 € / set</span><span class="pc-link">Pogledaj →</span></div></div></div>
+      <div class="pc"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=500&q=80" alt=""></div><div class="pc-body"><span class="pc-cat">Njega</span><h3 class="pc-name">Sapun za ruke i tijelo</h3><p class="pc-desc">Hladno prešan. Maslinovo ulje, lavanda, kaolin glina.</p><div class="pc-footer"><span class="pc-price">12 €</span><span class="pc-link">Pogledaj →</span></div></div></div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE: KATEGORIJA RUKA
+══════════════════════════════════════════ -->
+<div id="page-cat-ruka" class="page">
+  <nav class="bc"><span class="bc-link" onclick="nav('home')">Webshop</span><span>/</span><strong>Iz ruke u ruku</strong></nav>
+  <div class="cat-hero">
+    <div class="cat-hero-img"><img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=900&q=85&auto=format&fit=crop" alt="Iz ruke u ruku"></div>
+    <div class="cat-hero-content">
+      <span class="cat-eyebrow">Posebna kategorija</span>
+      <h1 class="cat-title">Iz ruke<br><em>u ruku</em></h1>
+      <p class="cat-desc">Neke stvari ne dolaze u paketu s barkodom. Dijele se s pričom i uz moj broj mobitela.</p>
+    </div>
+  </div>
+  <section class="section">
+    <div class="prod-box">
+      <div class="prod-box-img"><img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=700&q=85" alt="Sourdough"></div>
+      <div class="prod-box-body">
+        <div style="margin-bottom:.85rem"><span class="tag tag-dark">Iz ruke u ruku</span></div>
+        <h2 class="prod-box-title">Sourdough starter</h2>
+        <p class="prod-box-tagline">Aktivan, 5+ godina star. Sa svojom pričom.</p>
+        <p class="prod-box-text">Ovaj starter živim s njim od 2019. Šaljem 50–100g aktivnog startera uz rukom pisane upute i moj broj mobitela za sva pitanja.</p>
+        <div class="contact-box">
+          <p class="contact-title">Kako doći do startera</p>
+          <div class="contact-opt">📱 <span>WhatsApp: <strong>+385 9X XXX XXXX</strong></span></div>
+          <div class="contact-opt">📧 <span>Email: <strong>dora@polako.hr</strong></span></div>
+          <div class="contact-opt">📦 <span>Dostava poštom ili preuzimanje Zagreb</span></div>
+          <p class="contact-note">Cijena: samo troškovi slanja (~4€). Starter je besplatan.</p>
+        </div>
+      </div>
+    </div>
+    <div class="prod-box">
+      <div class="prod-box-img"><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=700&q=85" alt="Kefir"></div>
+      <div class="prod-box-body">
+        <div style="margin-bottom:.85rem"><span class="tag tag-dark">Iz ruke u ruku</span></div>
+        <h2 class="prod-box-title">Kefir zrnca</h2>
+        <p class="prod-box-tagline">Mliječna, aktivna. Svaki tjedan malo više.</p>
+        <p class="prod-box-text">Šaljem 2–3 žlice aktivnih zrnca u mlijeku. Zrnca rastu — uskoro ćeš ih i ti dijeliti dalje.</p>
+        <div class="contact-box">
+          <p class="contact-title">Kako doći do kefir zrnca</p>
+          <div class="contact-opt">📱 <span>WhatsApp: <strong>+385 9X XXX XXXX</strong></span></div>
+          <div class="contact-opt">📧 <span>Email: <strong>dora@polako.hr</strong></span></div>
+          <div class="contact-opt">📦 <span>Dostava poštom ili preuzimanje Zagreb</span></div>
+          <p class="contact-note">Cijena: samo troškovi slanja (~4€). Uz zrnca šaljem i printane upute.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section section-alt">
+    <div class="sh"><h2 class="sh-title">Iz časopisa</h2><div class="sh-line"></div></div>
+    <div class="g2">
+      <div class="ac"><div class="ac-img-wrap"><img class="ac-img" src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&q=80" alt=""></div><div class="ac-body"><span class="ac-cat">Kuhinja · Fermentacija</span><h3 class="ac-title">Sve što trebate znati o sourdough starteru</h3><p class="ac-excerpt">Od prvog hranjenja do prvog uspješnog kruha. Bez straha, bez tablica.</p><span class="ac-meta">10 min čitanja · 20. ožujka 2025.</span></div></div>
+      <div class="ac"><div class="ac-img-wrap"><img class="ac-img" src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=500&q=80" alt=""></div><div class="ac-body"><span class="ac-cat">Zdravlje · Fermentacija</span><h3 class="ac-title">Kefir svaki dan: što se promijenilo nakon tri mjeseca</h3><p class="ac-excerpt">Probiotici, probava, energija — subjektivno iskustvo uz malo znanosti.</p><span class="ac-meta">7 min čitanja · 5. travnja 2025.</span></div></div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE: PROIZVOD BUTTER BELL
+══════════════════════════════════════════ -->
+<div id="page-prod-butter-bell" class="page">
+  <nav class="bc">
+    <span class="bc-link" onclick="nav('home')">Webshop</span><span>/</span>
+    <span class="bc-link" onclick="nav('cat-kuhinja')">Kuhinja</span><span>/</span>
+    <strong>Butter Bell</strong>
+  </nav>
+  <div class="prod-detail-wrap">
+    <div>
+      <div class="gallery-main"><img id="bbImg" src="https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=800&q=85&auto=format&fit=crop" alt="Butter Bell"></div>
+      <div class="gallery-thumbs">
+        <div class="gthumb active" onclick="setImg('bbImg',0,bbImgs)"><img src="https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=200&q=75" alt=""></div>
+        <div class="gthumb" onclick="setImg('bbImg',1,bbImgs)"><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200&q=75" alt=""></div>
+        <div class="gthumb" onclick="setImg('bbImg',2,bbImgs)"><img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=200&q=75" alt=""></div>
+        <div class="gthumb" onclick="setImg('bbImg',3,bbImgs)"><img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&q=75" alt=""></div>
+      </div>
+    </div>
+    <div>
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem"><span class="tag tag-green">Kuhinja</span><span class="tag tag-hot">🔥 Bestseller</span></div>
+      <h1 class="prod-h1">Butter Bell</h1>
+      <p class="prod-tagline">Maslac uvijek mekan — bez hladnjaka.</p>
+      <div class="prod-rating"><span class="stars">★★★★★</span><span class="rating-text">4.9 · 47 recenzija</span></div>
+      <div class="price-row">
+        <span class="price-main" id="bbPrice">24 €</span>
+        <span class="price-old">29 €</span>
+        <span class="price-badge">– 17% Akcija</span>
+      </div>
+      <div class="var-section">
+        <div class="var-lbl">Boja <span class="var-sel" id="bbColorLbl">Kremasta bijela</span></div>
+        <div class="col-opts">
+          <button class="col-btn active" style="background:#f5f0e8;border-color:#d8d0c4" title="Kremasta bijela" onclick="pickColor(this,'Kremasta bijela','24 €','bbColorLbl','bbPrice')"></button>
+          <button class="col-btn" style="background:#9aad8e" title="Šafranska zelena" onclick="pickColor(this,'Šafranska zelena','24 €','bbColorLbl','bbPrice')"></button>
+          <button class="col-btn" style="background:#8a9baa" title="Plavičasto siva" onclick="pickColor(this,'Plavičasto siva','24 €','bbColorLbl','bbPrice')"></button>
+          <button class="col-btn" style="background:#c47558" title="Terakota" onclick="pickColor(this,'Terakota','26 €','bbColorLbl','bbPrice')"></button>
+          <button class="col-btn" style="background:#2a2520;border-color:#555" title="Mat crna" onclick="pickColor(this,'Mat crna','26 €','bbColorLbl','bbPrice')"></button>
+        </div>
+      </div>
+      <div class="var-section">
+        <div class="var-lbl">Veličina</div>
+        <div class="sz-opts">
+          <button class="sz-btn active" onclick="pickSz(this,'bbSz')">Mala (140ml)</button>
+          <button class="sz-btn" onclick="pickSz(this,'bbSz')">Velika (250ml)</button>
+        </div>
+      </div>
+      <div class="qty-row" style="margin-bottom:.75rem">
+        <div class="qty-wrap">
+          <button class="qty-btn" onclick="chQty('bbQty',-1)">−</button>
+          <input class="qty-num" id="bbQty" type="number" value="1" min="1" max="10" readonly>
+          <button class="qty-btn" onclick="chQty('bbQty',1)">+</button>
+        </div>
+        <button class="btn-add">🛒 Dodaj u košaricu</button>
+        <button class="btn-wish">♡</button>
+      </div>
+      <div class="del-box" style="margin-bottom:1.5rem">
+        <div class="del-row">📦 Dostava 2–4 radna dana · 4,50 €</div>
+        <div class="del-row">🎁 Besplatna dostava iznad 60 €</div>
+        <div class="del-row">↩️ Povrat unutar 14 dana</div>
+        <div class="del-row">🌿 Reciklirano pakiranje</div>
+      </div>
+      <div class="tabs-nav">
+        <button class="tab-btn active" onclick="openTab(this,'bbOpis')">Opis</button>
+        <button class="tab-btn" onclick="openTab(this,'bbSpec')">Specifikacije</button>
+        <button class="tab-btn" onclick="openTab(this,'bbOdrz')">Održavanje</button>
+        <button class="tab-btn" onclick="openTab(this,'bbRec')">Recenzije (47)</button>
+      </div>
+      <div id="bbOpis" class="tab-pane active">
+        <p class="tab-text">Butter Bell je keramički dvojac koji maslac čuva svježim i mekim do 30 dana — bez hladnjaka. Gornji dio puni se maslacem, donji vodom koja stvara nepropusni pečat.</p>
+        <p class="tab-text">Idealan za svaki doručak: maslac je uvijek savršene konzistencije za mazanje. Svaki primjerak je ručno glaziran i jedinstven.</p>
+      </div>
+      <div id="bbSpec" class="tab-pane">
+        <div class="specs">
+          <div class="spec-row"><span class="spec-key">Materijal</span><span class="spec-val">Keramika, ručno glazirana</span></div>
+          <div class="spec-row"><span class="spec-key">Kapacitet (mala)</span><span class="spec-val">140 ml / ~120g maslaca</span></div>
+          <div class="spec-row"><span class="spec-key">Kapacitet (velika)</span><span class="spec-val">250 ml / ~220g maslaca</span></div>
+          <div class="spec-row"><span class="spec-key">Visina</span><span class="spec-val">10,3 cm · 13 cm</span></div>
+          <div class="spec-row"><span class="spec-key">Porijeklo</span><span class="spec-val">Portugal, obiteljska radionica</span></div>
+          <div class="spec-row"><span class="spec-key">Perilica posuđa</span><span class="spec-val">Da ✓</span></div>
+        </div>
+      </div>
+      <div id="bbOdrz" class="tab-pane">
+        <p class="tab-text">💧 Mijenjaj vodu svaka 2–3 dana. Iznad 25°C preporuča se hladnjak.</p>
+        <p class="tab-text">🧼 Pere se u perilici posuđa ili toplom sapunastom vodom.</p>
+        <p class="tab-text">🧈 Koristite samo nesoljeni maslac — soljeni može oštetiti glazuru.</p>
+      </div>
+      <div id="bbRec" class="tab-pane">
+        <div class="review"><div class="review-header"><span class="review-name">Ana M.</span><span class="review-stars">★★★★★</span></div><p class="review-text">Kupila sam kremasta bijelu i presretna sam s njom. Maslac je uvijek savršen!</p><span class="review-meta">15. travnja 2025 · Kremasta bijela, mala</span></div>
+        <div class="review"><div class="review-header"><span class="review-name">Maja K.</span><span class="review-stars">★★★★★</span></div><p class="review-text">Terakota boja je predivna, ručna glazura je baš onako rustikalno savršena.</p><span class="review-meta">2. svibnja 2025 · Terakota, velika</span></div>
+        <div class="review"><div class="review-header"><span class="review-name">Petra L.</span><span class="review-stars">★★★★☆</span></div><p class="review-text">Odlična kvaliteta, brza dostava. Malo manji nego što sam zamislila, ali radi savršeno.</p><span class="review-meta">28. travnja 2025 · Šafranska zelena, mala</span></div>
+      </div>
+    </div>
+  </div>
+  <section class="section section-alt">
+    <div class="sh"><h2 class="sh-title">Iz časopisa</h2><div class="sh-line"></div></div>
+    <div class="art-feat">
+      <div class="art-feat-img"><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=700&q=80" alt=""></div>
+      <div class="art-feat-body">
+        <span class="art-feat-tag">Kuhinja · Rituali</span>
+        <h3 class="art-feat-title">Zašto je mekan maslac tajna dobrog doručka</h3>
+        <p class="art-feat-exc">O tome kako mali detalji — poput savršeno mekanog maslaca — mijenjaju ton cijelog dana.</p>
+        <p class="art-feat-meta">8 min čitanja · 12. svibnja 2025.</p>
+        <button class="btn btn-outline" style="width:fit-content">Čitaj članak →</button>
+      </div>
+    </div>
+    <div class="sh"><h2 class="sh-title">Može ti se svidjeti i</h2><div class="sh-line"></div></div>
+    <div class="g3">
+      <div class="pc" onclick="nav('prod-kosarica')"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1585478259715-876abe3f00b7?w=500&q=80" alt=""><span class="pc-badge"><span class="tag tag-hot">Bestseller</span></span></div><div class="pc-body"><span class="pc-cat">Kuhinja</span><h3 class="pc-name">Košara za dizanje kruha</h3><p class="pc-desc">Savršen par uz butter bell za pravi domaći doručak.</p><div class="pc-footer"><span class="pc-price">Od 28 €</span><span class="pc-link">Pogledaj →</span></div></div></div>
+      <div class="pc" onclick="nav('cat-kuhinja')"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=500&q=80" alt=""><span class="pc-badge"><span class="tag tag-new">Novo</span></span></div><div class="pc-body"><span class="pc-cat">Kuhinja</span><h3 class="pc-name">Dutch Oven</h3><p class="pc-desc">Za kruh koji zahtijeva savršen maslac za serviranje.</p><div class="pc-footer"><span class="pc-price">149 €</span><span class="pc-link">Pogledaj →</span></div></div></div>
+      <div class="pc" onclick="nav('cat-kuhinja')"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1544025162-d76694265947?w=500&q=80" alt=""></div><div class="pc-body"><span class="pc-cat">Kuhinja</span><h3 class="pc-name">Daska za serviranje</h3><p class="pc-desc">Maslinovo drvo za doručak i sve što dijeliš.</p><div class="pc-footer"><span class="pc-price">Od 38 €</span><span class="pc-link">Pogledaj →</span></div></div></div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE: PROIZVOD KOŠARA
+══════════════════════════════════════════ -->
+<div id="page-prod-kosarica" class="page">
+  <nav class="bc">
+    <span class="bc-link" onclick="nav('home')">Webshop</span><span>/</span>
+    <span class="bc-link" onclick="nav('cat-kuhinja')">Kuhinja</span><span>/</span>
+    <strong>Košara za dizanje kruha</strong>
+  </nav>
+  <div class="prod-detail-wrap">
+    <div>
+      <div class="gallery-main"><img id="ksImg" src="https://images.unsplash.com/photo-1585478259715-876abe3f00b7?w=800&q=85&auto=format&fit=crop" alt="Košara"></div>
+      <div class="gallery-thumbs">
+        <div class="gthumb active" onclick="setImg('ksImg',0,ksImgs)"><img src="https://images.unsplash.com/photo-1585478259715-876abe3f00b7?w=200&q=75" alt=""></div>
+        <div class="gthumb" onclick="setImg('ksImg',1,ksImgs)"><img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&q=75" alt=""></div>
+        <div class="gthumb" onclick="setImg('ksImg',2,ksImgs)"><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200&q=75" alt=""></div>
+      </div>
+    </div>
+    <div>
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem"><span class="tag tag-hot">🔥 Bestseller</span><span class="tag tag-green">Za kruh</span></div>
+      <h1 class="prod-h1">Košara za dizanje kruha</h1>
+      <p class="prod-tagline">Savršen spiralni uzorak na svakom kruhu iz ruke.</p>
+      <div class="prod-rating"><span class="stars">★★★★★</span><span class="rating-text">4.8 · 63 recenzije</span></div>
+      <div class="price-row"><span class="price-main" id="ksPrice">28 €</span></div>
+      <div class="var-section">
+        <div class="var-lbl">Oblik <span class="var-sel" id="ksOblikLbl">Okrugla (25cm)</span></div>
+        <div class="sz-opts">
+          <button class="sz-btn active" onclick="pickSzCustom(this,'ksOblikLbl','Okrugla (25cm)','ksPrice','28 €')">Okrugla</button>
+          <button class="sz-btn" onclick="pickSzCustom(this,'ksOblikLbl','Duguljasta (30cm)','ksPrice','32 €')">Duguljasta</button>
+        </div>
+      </div>
+      <div class="var-section">
+        <div class="var-lbl">Materijal <span class="var-sel" id="ksMatLbl">Rattan</span></div>
+        <div class="sz-opts">
+          <button class="sz-btn active" onclick="pickSzCustom(this,'ksMatLbl','Rattan','','')">Rattan</button>
+          <button class="sz-btn" onclick="pickSzCustom(this,'ksMatLbl','Pulpa + lanen','','')">Pulpa + lanen</button>
+        </div>
+      </div>
+      <div class="qty-row" style="margin-bottom:.75rem">
+        <div class="qty-wrap">
+          <button class="qty-btn" onclick="chQty('ksQty',-1)">−</button>
+          <input class="qty-num" id="ksQty" type="number" value="1" min="1" max="10" readonly>
+          <button class="qty-btn" onclick="chQty('ksQty',1)">+</button>
+        </div>
+        <button class="btn-add">🛒 Dodaj u košaricu</button>
+        <button class="btn-wish">♡</button>
+      </div>
+      <div class="del-box" style="margin-bottom:1.5rem">
+        <div class="del-row">📦 Dostava 2–4 radna dana · 4,50 €</div>
+        <div class="del-row">🎁 Besplatna dostava iznad 60 €</div>
+        <div class="del-row">↩️ Povrat unutar 14 dana</div>
+        <div class="del-row">🌾 Prirodni materijali</div>
+      </div>
+      <div class="tabs-nav">
+        <button class="tab-btn active" onclick="openTab(this,'ksOpis')">Opis</button>
+        <button class="tab-btn" onclick="openTab(this,'ksSpec')">Specifikacije</button>
+        <button class="tab-btn" onclick="openTab(this,'ksUpute')">Upute</button>
+        <button class="tab-btn" onclick="openTab(this,'ksRec')">Recenzije (63)</button>
+      </div>
+      <div id="ksOpis" class="tab-pane active">
+        <p class="tab-text">Banneton košara nezaobilazan je alat u svakom domu koji peče vlastiti kruh. Tijesto u njoj diže se u savršenom obliku i prima karakteristični spiralni uzorak.</p>
+        <p class="tab-text">Rattan varijanta je klasična i dugotrajnog vijeka. Pulpa varijanta dolazi s lanenom košuljicom — idealna za početnike jer sprječava lijepljenje.</p>
+      </div>
+      <div id="ksSpec" class="tab-pane">
+        <div class="specs">
+          <div class="spec-row"><span class="spec-key">Materijal</span><span class="spec-val">Rattan ili pulpa + lanen</span></div>
+          <div class="spec-row"><span class="spec-key">Okrugla</span><span class="spec-val">Ø 25 cm, vis. 8 cm</span></div>
+          <div class="spec-row"><span class="spec-key">Duguljasta</span><span class="spec-val">30 × 13 cm</span></div>
+          <div class="spec-row"><span class="spec-key">Kapacitet</span><span class="spec-val">750g – 1kg tijesta</span></div>
+          <div class="spec-row"><span class="spec-key">Pakiranje</span><span class="spec-val">Pamučna vrećica</span></div>
+        </div>
+      </div>
+      <div id="ksUpute" class="tab-pane">
+        <p class="tab-text">1. Dobro pobrašni košaru (rižino brašno je idealno).<br>2. Stavi oblikovano tijesto šavom prema gore.<br>3. Prekrij krpom i ostavi da diže 1–12h.<br>4. Prevrni na papir za pečenje, stavi u Dutch Oven.<br>5. Košara ne ide u pećnicu.</p>
+        <p class="tab-text">Čišćenje: ne pere se vodom — otresi brašno i ostavi na zraku.</p>
+      </div>
+      <div id="ksRec" class="tab-pane">
+        <div class="review"><div class="review-header"><span class="review-name">Ivana P.</span><span class="review-stars">★★★★★</span></div><p class="review-text">Kruh mi je od kad imam ovu košaru potpuno drugačiji. Oblik je savršen, a onaj uzorak spirale — presretna sam!</p><span class="review-meta">18. travnja 2025 · Rattan, okrugla</span></div>
+        <div class="review"><div class="review-header"><span class="review-name">Tomislav H.</span><span class="review-stars">★★★★★</span></div><p class="review-text">Kupio sam i okruglu i duguljatu. Kvaliteta rattana je izvrsna. Duguljata savršena za moj standardni 800g recept.</p><span class="review-meta">5. svibnja 2025 · Rattan, duguljasta</span></div>
+      </div>
+    </div>
+  </div>
+  <section class="section section-alt">
+    <div class="sh"><h2 class="sh-title">Iz časopisa</h2><div class="sh-line"></div></div>
+    <div class="art-feat" style="margin-bottom:2rem">
+      <div class="art-feat-img"><img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=700&q=80" alt=""></div>
+      <div class="art-feat-body">
+        <span class="art-feat-tag">Kuhinja · Kruh</span>
+        <h3 class="art-feat-title">Moj prvi sourdough: sve što bih voljela znati na početku</h3>
+        <p class="art-feat-exc">Od prvog startera do prvog uspješnog kruha — iskrena priča o greškama i strpljenju.</p>
+        <p class="art-feat-meta">12 min čitanja · 3. travnja 2025.</p>
+        <button class="btn btn-outline" style="width:fit-content">Čitaj članak →</button>
+      </div>
+    </div>
+    <div class="sh"><h2 class="sh-title">Kompletni set za kruh</h2><div class="sh-line"></div></div>
+    <div class="g3">
+      <div class="pc" onclick="nav('cat-kuhinja')"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=500&q=80" alt=""><span class="pc-badge"><span class="tag tag-new">Novo</span></span></div><div class="pc-body"><span class="pc-cat">Kuhinja</span><h3 class="pc-name">Dutch Oven</h3><p class="pc-desc">Savršen za pečenje kruha s hrskavom korom.</p><div class="pc-footer"><span class="pc-price">149 €</span><span class="pc-link">Pogledaj →</span></div></div></div>
+      <div class="pc" onclick="nav('cat-ruka')"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&q=80" alt=""><span class="pc-badge"><span class="tag tag-dark">Iz ruke u ruku</span></span></div><div class="pc-body"><span class="pc-cat">Iz ruke u ruku</span><h3 class="pc-name">Sourdough starter</h3><p class="pc-desc">Aktivan starter, 5+ godina. Uz upute za hranjenje.</p><div class="pc-footer"><span class="pc-price">Dogovor</span><span class="pc-link">Javi se →</span></div></div></div>
+      <div class="pc" onclick="nav('prod-butter-bell')"><div class="pc-img-wrap" style="aspect-ratio:4/3"><img class="pc-img" src="https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=500&q=80" alt=""></div><div class="pc-body"><span class="pc-cat">Kuhinja</span><h3 class="pc-name">Butter Bell</h3><p class="pc-desc">Za maslac koji uvijek čeka spreman uz svježi kruh.</p><div class="pc-footer"><span class="pc-price">Od 24 €</span><span class="pc-link">Pogledaj →</span></div></div></div>
+    </div>
+  </section>
+</div>
+
+<script>
+// ── NAVIGATION ──
+const bbImgs=['https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=800&q=85','https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=85','https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=85','https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&q=85'];
+const ksImgs=['https://images.unsplash.com/photo-1585478259715-876abe3f00b7?w=800&q=85','https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&q=85','https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=85'];
+
+function nav(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function scrollToId(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth' });
+}
+
+function setImg(imgId, i, arr) {
+  document.getElementById(imgId).src = arr[i];
+  const wrap = document.getElementById(imgId).closest('.prod-detail-wrap') || document.getElementById(imgId).parentElement.parentElement;
+  wrap.querySelectorAll('.gthumb').forEach((t,j) => t.classList.toggle('active', i===j));
+}
+
+function pickColor(btn, name, price, lblId, priceId) {
+  btn.closest('.col-opts').querySelectorAll('.col-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(lblId).textContent = name;
+  document.getElementById(priceId).textContent = price;
+}
+
+function pickSz(btn, groupId) {
+  btn.closest('.sz-opts').querySelectorAll('.sz-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function pickSzCustom(btn, lblId, lblText, priceId, priceText) {
+  btn.closest('.sz-opts').querySelectorAll('.sz-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (lblId) document.getElementById(lblId).textContent = lblText;
+  if (priceId && priceText) document.getElementById(priceId).textContent = priceText;
+}
+
+function chQty(id, d) {
+  const el = document.getElementById(id);
+  el.value = Math.max(1, Math.min(10, +el.value + d));
+}
+
+function openTab(btn, id) {
+  const wrap = btn.closest('.tabs-nav').parentElement;
+  wrap.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  wrap.querySelectorAll('.tab-pane').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+function flt(btn, cat) {
+  document.querySelectorAll('.pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#kuhGrid > *').forEach(el => {
+    if (cat === 'sve') { el.style.display = ''; }
+    else { el.style.display = (el.dataset.cat || '').includes(cat) ? '' : 'none'; }
+  });
+}
+</script>
+</body>
+</html>
